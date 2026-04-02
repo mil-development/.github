@@ -1,6 +1,6 @@
 # Conventions
 
-This document defines conventions for repository naming, branching, commit messages, and release workflows used across the organization.
+This document defines conventions for repository naming, branching, commit messages, dependency locking, and release workflows used across the organization.
 
 ## Table of contents
 
@@ -19,6 +19,7 @@ This document defines conventions for repository naming, branching, commit messa
   * [Develop branch](#develop-branch)
   * [Feature branches](#feature-branches)
 * [Release and deployment](#release-and-deployment)
+* [Dependency versions](#dependency-versions)
 * [Check triggers](#check-triggers)
 * [Enforcement](#enforcement)
 
@@ -30,6 +31,7 @@ These conventions apply to repositories maintained within the organization and d
 * branch names
 * pull request titles
 * commit message subjects (the first line) in a pull request
+* dependency version locking and lock files
 * release and deployment workflows
 
 ---
@@ -349,6 +351,42 @@ Release workflows must enforce the following rules:
 * production releases may only be triggered from `main`
 * staging releases may only be triggered from `develop`
 * feature branches must not trigger deployment workflows
+
+---
+
+## Dependency versions
+
+Dependency versions must be pinned so that installs are reproducible across local development, continuous integration, and deployment environments.
+
+### Node.js (npm / Yarn)
+
+Each repository must use one JavaScript package manager and commit its lock file.
+
+Use one of the following:
+
+* `package-lock.json` (npm)
+* `yarn.lock` (Yarn)
+
+Rules:
+
+* the lock file for the chosen package manager must be committed to version control
+* do not omit the lock file or commit conflicting lock files for different tools
+
+### Python (Poetry)
+
+Python projects must use [Poetry](https://python-poetry.org/) for dependency management.
+
+Rules:
+
+* `poetry.lock` must be committed to version control
+* installs must resolve dependencies using the committed lock file
+
+### Lock files in version control
+
+Rules:
+
+* lock files must always be committed to version control
+* CI, staging, and production must use the same pinned dependency graph as local development
 
 ---
 

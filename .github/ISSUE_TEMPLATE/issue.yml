@@ -1,0 +1,23 @@
+name: Issue
+description: Universal issue form for all work types
+title: "issue: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What needs to be done?
+      description: One clear sentence with the goal or problem.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Expected outcome
+      description: How we know this is done.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context (optional)
+      description: Links, screenshots, logs, dependencies, or constraints.

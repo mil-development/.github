@@ -2,6 +2,26 @@
 
 This document defines conventions for repository naming, branching, commit messages, and release workflows used across the organization.
 
+## Table of contents
+
+* [Scope](#scope)
+* [Repository naming](#repository-naming)
+  * [Repository types](#repository-types)
+* [Shared types](#shared-types)
+  * [Issue types](#issue-types)
+* [Format rules](#format-rules)
+  * [Branch name](#branch-name)
+  * [Pull request title](#pull-request-title)
+  * [Commit message subject](#commit-message-subject)
+* [Ticket referencing](#ticket-referencing)
+* [Branching strategy](#branching-strategy)
+  * [Main branch](#main-branch)
+  * [Develop branch](#develop-branch)
+  * [Feature branches](#feature-branches)
+* [Release and deployment](#release-and-deployment)
+* [Check triggers](#check-triggers)
+* [Enforcement](#enforcement)
+
 ## Scope
 
 These conventions apply to repositories maintained within the organization and define rules for:

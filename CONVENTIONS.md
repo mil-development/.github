@@ -1,6 +1,6 @@
 # Conventions
 
-This document defines conventions for repository naming, branching, commit messages, dependency locking, and release workflows used across the organization.
+This document defines conventions for repository naming, branching, commit messages, dependency locking, tests and lint, and release workflows used across the organization.
 
 ## Table of contents
 
@@ -20,6 +20,7 @@ This document defines conventions for repository naming, branching, commit messa
   * [Feature branches](#feature-branches)
 * [Release and deployment](#release-and-deployment)
 * [Dependency versions](#dependency-versions)
+* [Tests and linting](#tests-and-linting)
 * [Check triggers](#check-triggers)
 * [Enforcement](#enforcement)
 
@@ -32,6 +33,7 @@ These conventions apply to repositories maintained within the organization and d
 * pull request titles
 * commit message subjects (the first line) in a pull request
 * dependency version locking and lock files
+* tests and lint—recommended tooling in [Tests and linting](#tests-and-linting)
 * release and deployment workflows
 
 ---
@@ -351,6 +353,7 @@ Release workflows must enforce the following rules:
 * production releases may only be triggered from `main`
 * staging releases may only be triggered from `develop`
 * feature branches must not trigger deployment workflows
+* any project build run in continuous integration must **fail** when tests or lint fail; deployments and releases must not proceed from a failing test or lint run
 
 ---
 
@@ -387,6 +390,43 @@ Rules:
 
 * lock files must always be committed to version control
 * CI, staging, and production must use the same pinned dependency graph as local development
+
+---
+
+## Tests and linting
+
+### Commands and CI
+
+Rules:
+
+* tests and lint must each be runnable with one documented command from the repository root
+* continuous integration must execute both commands (for example on every pull request)
+* document both commands in the repository `README` or in the project manifest
+
+### Node.js (npm)
+
+Expose tests through the `test` script (`npm run test`) and lint through the `lint` script (`npm run lint`) from the repository root.
+
+Example `package.json` fragment:
+
+```json
+"scripts": {
+  "test": "vitest",
+  "lint": "eslint ."
+}
+```
+
+### Python (Poetry)
+
+Expose tests through a Poetry script named `test` (`poetry run test`) and lint through a Poetry script named `lint` (`poetry run lint`) from the repository root.
+
+Example `pyproject.toml` fragment:
+
+```toml
+[tool.poetry.scripts]
+test = "pytest:console_main"
+lint = "ruff.__main__:main"
+```
 
 ---
 

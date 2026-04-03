@@ -16,6 +16,8 @@ This repository provides shared community-health files and templates that are re
   - Standard review context: summary, testing, related issue, and optional notes.
 - **Conventions reference**: `CONVENTIONS.md`
   - Naming and commit conventions used across branches, pull request titles, and commit subjects.
+- **CODEOWNERS template**: `.github/CODEOWNERS.template`
+  - Copy to `.github/CODEOWNERS` per repository; ownership is not inherited from this repo like issue/PR templates.
 
 ## Conventions
 
@@ -28,6 +30,7 @@ Use `CONVENTIONS.md` as the source of truth for:
 - conventional commit subject format
 - ticket referencing format (`closes #<number>` / `refs #<number>`)
 - pull request check triggers and enforcement behavior
+- code review and `CODEOWNERS` (`CONVENTIONS.md`)
 - examples of valid and invalid values
 
 ## How Inheritance Works

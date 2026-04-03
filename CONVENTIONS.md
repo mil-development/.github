@@ -1,6 +1,6 @@
 # Conventions
 
-This document defines conventions for repository naming, branching, commit messages, dependency locking, tests and lint, and release workflows used across the organization.
+This document defines conventions for repository naming, branching, commit messages, pull request merge strategy, dependency locking, tests and lint, and release workflows used across the organization.
 
 ## Table of contents
 
@@ -13,12 +13,16 @@ This document defines conventions for repository naming, branching, commit messa
   * [Branch name](#branch-name)
   * [Pull request title](#pull-request-title)
   * [Commit message subject](#commit-message-subject)
+  * [Commit message body and footer](#commit-message-body-and-footer)
 * [Ticket referencing](#ticket-referencing)
 * [Branching strategy](#branching-strategy)
   * [Main branch](#main-branch)
   * [Develop branch](#develop-branch)
   * [Feature branches](#feature-branches)
+* [Pull request merge strategy](#pull-request-merge-strategy)
 * [Release and deployment](#release-and-deployment)
+  * [Semantic versioning](#semantic-versioning)
+* [Code review and ownership](#code-review-and-ownership)
 * [Dependency versions](#dependency-versions)
 * [Tests and linting](#tests-and-linting)
 * [Check triggers](#check-triggers)
@@ -32,9 +36,12 @@ These conventions apply to repositories maintained within the organization and d
 * branch names
 * pull request titles
 * commit message subjects (the first line) in a pull request
+* commit message body and footer (when used) per [Commit message body and footer](#commit-message-body-and-footer)
+* pull request merge strategy and the relationship between pull request titles and merged commit messages on the target branch
 * dependency version locking and lock files
 * tests and lint—recommended tooling in [Tests and linting](#tests-and-linting)
-* release and deployment workflows
+* release and deployment workflows and semantic version tags
+* code review expectations and ownership (CODEOWNERS) per [Code review and ownership](#code-review-and-ownership)
 
 ---
 
@@ -171,6 +178,10 @@ Valid (with ticket):
 * `fix/null-user-MIL-51`
 * `refactor/map-renderer-MIL-77`
 
+Valid (`revert` uses the shared `revert` type):
+
+* `revert/broken-login-MIL-90`
+
 Invalid:
 
 * `feature/add-login-flow`
@@ -222,6 +233,32 @@ Invalid:
 
 ---
 
+### Commit message body and footer
+
+Beyond the subject line, commit messages may include a **body** and **footer** following [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+
+**Body**
+
+* Leave one blank line after the subject, then add paragraphs that explain *why* the change was made or provide context that does not fit in the subject.
+
+**Footer**
+
+* Separate the footer from the body with a blank line when both are present.
+* Use footer lines for metadata, including:
+  * `BREAKING CHANGE: <description>` when the change breaks compatibility for consumers of a public API or contract and the subject does not use `!` (see below).
+  * References to issues in the form agreed for the repository (see [Ticket referencing](#ticket-referencing)).
+
+**Breaking changes**
+
+* In the subject line, a `!` immediately after the type denotes a breaking change (for example `feat!: ...`, `fix!: ...`).
+* If the subject does not use `!`, document the breaking change in the footer as `BREAKING CHANGE:`.
+
+**Scope**
+
+* This document does not require or standardize a parenthesized scope in commit messages. Teams may use scopes locally if their tooling supports them; they are not part of these organization-wide rules.
+
+---
+
 ## Ticket Referencing
 
 Reference issue or ticket IDs in pull request descriptions and optionally in titles or commit subjects.
@@ -245,6 +282,8 @@ Notes:
 
 * use explicit words such as `refs` or `closes` when mentioning ticket IDs
 * if using external trackers (for example Jira), include the key in the summary text unless regex rules are updated
+* a ticket suffix on the branch name (`-<PROJECTKEY>-<number>`) is sufficient to associate the branch with an external ticket; integrations that rely on the pull request description may still require the key there
+* when both a GitHub issue and an external tracker (for example Jira) apply to the same change, include both references explicitly in the pull request description so linking does not depend on a single integration
 
 ---
 
@@ -310,6 +349,18 @@ Feature branches:
 
 ---
 
+## Pull request merge strategy
+
+Repositories in this organization use **squash merge** as the default and expected way to merge pull requests into `develop` and `main`.
+
+Rules:
+
+* With **squash merge**, the merge produces a **single** commit on the target branch. The **first line** (subject) of that commit is taken from the **pull request title** by default in GitHub. Therefore the pull request title must follow [Pull request title](#pull-request-title) and match what you want in permanent history.
+* Optional additional lines for the squash commit (body or footer) may be edited at merge time; when only the subject matters for checks, a correct pull request title is still required.
+* **Merge commit** and **rebase and merge** are not defined as organization-wide standards. If a repository uses a different merge method, repository owners must document the exception and ensure resulting history still satisfies these conventions where applicable.
+
+---
+
 ## Release and Deployment
 
 Deployment is performed through CI workflows.
@@ -348,12 +399,32 @@ v1.2.1
 v2.0.0
 ```
 
+### Semantic versioning
+
+Production release tags should follow [Semantic Versioning 2.0.0](https://semver.org/) using the form `vMAJOR.MINOR.PATCH` (for example `v1.2.0`).
+
+* **MAJOR** — incompatible changes to a public API or other contracts that require consumers to change how they integrate.
+* **MINOR** — new backward-compatible functionality.
+* **PATCH** — backward-compatible bug fixes.
+
+Pre-release versions (for example `v1.3.0-beta.1`) are optional and may be used when the repository’s release process defines them; they must remain consistent with the same semver rules for incrementing identifiers.
+
 Release workflows must enforce the following rules:
 
 * production releases may only be triggered from `main`
 * staging releases may only be triggered from `develop`
 * feature branches must not trigger deployment workflows
 * any project build run in continuous integration must **fail** when tests or lint fail; deployments and releases must not proceed from a failing test or lint run
+
+---
+
+## Code review and ownership
+
+* Changes to protected branches (`main`, `develop`) must land **only** through pull requests; direct pushes remain disallowed as described in [Branching strategy](#branching-strategy).
+* The minimum number of approving reviews required before merge is set by branch protection rules for the repository or organization.
+* Reviewers should verify that changes follow these conventions (branch name, pull request title, tests, and lint).
+* Repositories with clear ownership boundaries should use a **`CODEOWNERS`** file so that changes under critical paths request review from the right **team** (`@org/team-name`). Name a **primary contact (DRI)** for escalations—either in a comment in `CODEOWNERS`, on the same owner line if their review is required on every change, or in the repository `README`. Use `.github/CODEOWNERS.template` in the organization `.github` repository as a starting point.
+* Who may click **merge** after required approvals is governed by GitHub organization and repository settings (including repository owners); exceptions are decided by repository owners.
 
 ---
 
@@ -444,3 +515,5 @@ Conventions checks run on pull request events:
 ## Enforcement
 
 If repository names, branch names, pull request titles, or commit subjects do not match these rules, the conventions workflow fails and the pull request cannot pass required checks until fixed.
+
+Because the organization uses **squash merge** by default, the **pull request title** is the primary subject line that lands on the target branch; it must satisfy the same format rules as a commit message subject. When checks validate the merged commit message after squash, that validation applies to the title used at merge time.

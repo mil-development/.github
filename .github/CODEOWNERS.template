@@ -1,0 +1,17 @@
+# Copy to `.github/CODEOWNERS` per repo. Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# Teams need write access and visible membership where required.
+
+# --- Default owners (team) ---
+# Uncomment the line below (remove the leading # and space before *).
+# * @my-org/team-name
+
+# --- Primary contact (DRI) — comment only; does not request review ---
+# Edit the handle; leave this line commented (starts with #).
+# DRI: @username
+
+# --- Team + DRI as code owners on every PR (optional; use instead of block above) ---
+# * @my-org/team-name @username
+
+# --- Path-specific (examples) ---
+# /.github/workflows/ @my-org/dev-experience
+# /docs/ @my-org/docs
